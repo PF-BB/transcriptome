@@ -1,0 +1,9 @@
+Package: SIMA
+Type: Package
+Title: SImple Microarray Analysis
+Version: 1.0
+Date: 2014-02-18
+Author: Justine Guégan, Vincent Guillemot
+Maintainer: Vincent Guillemot <v.guillemot-ihu@icm-institue.org>
+Description: This is a package for the analysis of microarray data.
+License: GPL v3.0
