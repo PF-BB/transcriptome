@@ -2,24 +2,12 @@
 #' @param input A character string: either the name of the folder where to find the CEL files and the phenotype data OR the name of the raw Illumina file obtained with BeadStudio.
 #' @param phenoFile A character string: where to find the phenotypes of interest. It is required to be a tab-separated file.
 #' @param type A character string: must be either "affy" or "illumina".
-#' @return \item{eset}{An object of classe Expression-set.}
-#' @references FARMS.
-#' @title Normalization of Affymetrix
-#' @export affy_normalization
-
-#' @param dataFile A character string for BeadStudio file.
-#' @return \item{eset}{An object of classe Expression-set.}
-#' @references lumi.
-#' @title Normalization of Illumina
-#' @export lumi_normalization
-
-#' @param inputFolder A character string: where to find the CEL files and the phenotype data.
 #' @param bg.method A character string: the method used to deals with microarray background noise. If the specified method is not supported, an error is generated
 #' @param norm.method A character string: the method used perform an inter-array normalization. If the specified method is not supported, an error is generated
-#' @return \item{eset}{An object of class Expression-set.}
-#' @references FARMS.
-#' @title Normalization of Affymetrix
-#' @export affy_normalization
+#' @return \item{eset}{An object of classe Expression-set.}
+#' @references FARMS and lumi.
+#' @title Normalization of Affymetrix or Illumina datasets.
+#' @export normalization
 
 normalization <- function(input, phenoFile, type, bg.method="none", norm.method="quantile"){
   
