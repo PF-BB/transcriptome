@@ -57,7 +57,7 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   #  
   #}
   
-  eSet = lumiBatch2eSet(data.norm)
+  eSet = batch2eSet(data.norm)
   
   return(eSet)
 }

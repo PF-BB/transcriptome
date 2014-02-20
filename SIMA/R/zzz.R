@@ -7,7 +7,7 @@ eSet2lumiBatch <- function(eSet) {
                   exprs = eSet@assayData$exprs, 
                   phenoData = new("AnnotatedDataFrame", eSet@phenoData@data), 
                   featureData = new("AnnotatedDataFrame", eSet@featureData@data),
-                  annotation = eSeth@annotation
+                  annotation = eSet@annotation
   )
   return(lumiBatch)
 }
@@ -16,7 +16,7 @@ eSet2affyBatch <- function(eSet){
                   exprs = eSet@assayData$exprs, 
                   phenoData = new("AnnotatedDataFrame", eSet@phenoData@data), 
                   featureData = new("AnnotatedDataFrame", eSet@featureData@data),
-                  annotation = eSeth@annotation
+                  annotation = eSet@annotation
 }
 
 batch2eSet <- function(batch){
