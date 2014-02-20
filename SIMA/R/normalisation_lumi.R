@@ -5,11 +5,12 @@
 #' @title Normalization of Illumina
 #' @export lumi_normalization
 
-lumi_normalization <- function(dataFile,phenoFile,bg.method="none",norm.method="quantile"){
+lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.method="quantile"){
   
+  # 0. Load packages (move somewhere else?)
   require(lumi)
   
-  #Tests
+  # 1. Test on arguments 
   if (missing (dataFile)){
     stop("\n\tL'argument dataFile est manquant.\n",call.=FALSE)
   }
@@ -34,10 +35,10 @@ lumi_normalization <- function(dataFile,phenoFile,bg.method="none",norm.method="
     stop(paste0("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !\n"),call.=FALSE)
   }
   
-  #Lecture du fichier phénotype
-  pheno = read.table(phenoFile,sep="\t",header=T)
+  #2. Read phenotype data file
+  pheno = read.table(phenoFile, sep="\t", header=T)
   
-  #lecture du fichier avec la fonction lumiR.batch
+  # 3. Create lumiBatch
   data = tryCatch(
     lumiR.batch(fileList=dataFile,sampleInfoFile=pheno),
     warning=function(w){
@@ -48,7 +49,7 @@ lumi_normalization <- function(dataFile,phenoFile,bg.method="none",norm.method="
     }
   )  
   
-  #Normalisation avec la fonction lumiExpresso
+  # 4. Apply normalization with wrapper function "lumi::lumiExpresso"
   data.norm = lumiExpresso(data,bgcorrect.param=list(method=bg.method),normalize.param=list(method=norm.method),varianceStabilize.param=list(method="log2"))
   
   #Normalisation "average" à implémenter
@@ -59,5 +60,4 @@ lumi_normalization <- function(dataFile,phenoFile,bg.method="none",norm.method="
   eSet = lumiBatch2eSet(data.norm)
   
   return(eSet)
-  
 }
