@@ -28,3 +28,28 @@ batch2eSet <- function(batch){
   )
   return(eSet)
 }
+
+thresholdIntensity <- function(eSet, seuil=NULL){
+  
+  if(is.null(seuil))
+    stop("L'argulent threshold est manquant avec aucune valeur par défaut",call.=FALSE)
+  
+  if ( !is.numeric(seuil))
+    stop("L'argument threshold doit être une valeur numérique",call.=FALSE)
+  
+  data = exprs(eSet)
+  if(max(data) < 20 & seuil >= 10)
+    warning("Les valeurs d'intensités sont en log2. Vérifiez votre seuil ! ")
+  
+  data[data < seuil] = seuil
+  
+  eSetnew = new('ExpressionSet',
+                exprs = data, 
+                phenoData = new("AnnotatedDataFrame", eSet@phenoData@data),
+                featureData = new("AnnotatedDataFrame", eSet@featureData@data),
+                annotation = eSet@annotation
+  )
+  
+  return(eSetnew)
+  
+}

@@ -58,29 +58,36 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   return(eSet)
 }
 
+
 lumi_normalization_average <- function(rawLumiBatch){
   cat("Background Correction: none\n")
   cat("Variance Stabilizing Transform method: log2\n")
   cat("Normalisation method: average\n\n")
   cat("Choose reference array(s) in the table\n")
   #Modifier la ou les arrays de reference (1=reference, 0=autre array)
-  M = cbind(rawLumiBatch@phenoData@data,refArray=c(1,rep(0, ncol(data)-1)))
+  M = cbind(rawLumiBatch@phenoData@data,refArray=c(1,rep(0, ncol(rawLumiBatch)-1)))
   M=fix(M)
   cat(paste0("Number of reference arrays = ",length(which(M$refArray=="1")),"\n\n"))
   cat("Perform average normalization ...\n")
+  
   dataraw.mat = exprs(rawLumiBatch)
+  dataraw.mat[dataraw.mat < 1] = 1.01
+  dataraw.mat = log2(dataraw.mat)
   datanorm.mat= dataraw.mat
+    
+  
   ref.mean.array = mean(dataraw.mat[,M$refArray==1])
   scaling.factor=list()
   for(i in 1:ncol(dataraw.mat)){
     scaling.factor[[i]] = ref.mean.array/mean(dataraw.mat[,i])
-    datanorm.mat[,i]=log2(dataraw.mat[,i]*scaling.factor[[i]])
+    datanorm.mat[,i]=dataraw.mat[,i]*scaling.factor[[i]]
   }
+  
   eSet = new('ExpressionSet',
              exprs = datanorm.mat, 
-             phenoData = new("AnnotatedDataFrame", data@phenoData@data),
-             featureData = new("AnnotatedDataFrame", data@featureData@data),
-             annotation = data@annotation
+             phenoData = new("AnnotatedDataFrame", rawLumiBatch@phenoData@data),
+             featureData = new("AnnotatedDataFrame", rawLumiBatch@featureData@data),
+             annotation = rawLumiBatch@annotation
   )
   cat("done.\n")
   return(eSet)
