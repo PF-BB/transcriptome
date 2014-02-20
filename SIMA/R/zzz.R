@@ -17,6 +17,7 @@ eSet2affyBatch <- function(eSet){
                   phenoData = new("AnnotatedDataFrame", eSet@phenoData@data), 
                   featureData = new("AnnotatedDataFrame", eSet@featureData@data),
                   annotation = eSet@annotation
+  )
 }
 
 batch2eSet <- function(batch){

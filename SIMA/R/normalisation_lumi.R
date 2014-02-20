@@ -26,7 +26,7 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   if(all(bg.method != c('none', 'bgAdjust', 'forcePositive', 'bgAdjust.affy')))
     stop("\n\tLa méthode de correction du bruit de fond ",bg.method," n'est pas supportée !",call.=FALSE)
   
-  if(all(norm.method != c("quantile", "rsn", "ssn", "loess", "vsn", "rankinvariant","average")))
+  if(all(norm.method != c("quantile", "rsn", "ssn", "loess", "vsn", "rankinvariant","none")))
     stop("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
     
   #2. Read phenotype data file
@@ -43,53 +43,26 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
     }
   )  
   cat("\n")
+  
   # 4. Normalisation
-  if(norm.method=="average"){
-    
-        eSet = lumi_normalization_average(data)
-        
+  ## Si déjà faite dans BeadStudio
+  if(bg.method=="none" & norm.method=="none"){
+    cat("Perform thresholding ...\n")
+    cat("Perform log2 transformation ...\ndone.\n")
+    data = thresholdIntensity(data, seuil=10)
+    data.log2 = log2(exprs(data))
+    eSet = new('ExpressionSet',
+                  exprs = data.log2, 
+                  phenoData = new("AnnotatedDataFrame", data@phenoData@data),
+                  featureData = new("AnnotatedDataFrame", data@featureData@data),
+                  annotation = data@annotation
+    )
   }else{
-    # 4. Apply normalization with wrapper function "lumi::lumiExpresso"
+    ## 4. Apply normalization with wrapper function "lumi::lumiExpresso"
     data.norm = lumiExpresso(data,bgcorrect.param=list(method=bg.method),normalize.param=list(method=norm.method),varianceStabilize.param=list(method="log2"))
     eSet = batch2eSet(data.norm)
-    
   }
   
   return(eSet)
 }
 
-
-lumi_normalization_average <- function(rawLumiBatch){
-  cat("Background Correction: none\n")
-  cat("Variance Stabilizing Transform method: log2\n")
-  cat("Normalisation method: average\n\n")
-  cat("Choose reference array(s) in the table\n")
-  #Modifier la ou les arrays de reference (1=reference, 0=autre array)
-  M = cbind(rawLumiBatch@phenoData@data,refArray=c(1,rep(0, ncol(rawLumiBatch)-1)))
-  M=fix(M)
-  cat(paste0("Number of reference arrays = ",length(which(M$refArray=="1")),"\n\n"))
-  cat("Perform average normalization ...\n")
-  
-  dataraw.mat = exprs(rawLumiBatch)
-  dataraw.mat[dataraw.mat < 1] = 1.01
-  dataraw.mat = log2(dataraw.mat)
-  datanorm.mat= dataraw.mat
-    
-  
-  ref.mean.array = mean(dataraw.mat[,M$refArray==1])
-  scaling.factor=list()
-  for(i in 1:ncol(dataraw.mat)){
-    scaling.factor[[i]] = ref.mean.array/mean(dataraw.mat[,i])
-    datanorm.mat[,i]=dataraw.mat[,i]*scaling.factor[[i]]
-  }
-  
-  eSet = new('ExpressionSet',
-             exprs = datanorm.mat, 
-             phenoData = new("AnnotatedDataFrame", rawLumiBatch@phenoData@data),
-             featureData = new("AnnotatedDataFrame", rawLumiBatch@featureData@data),
-             annotation = rawLumiBatch@annotation
-  )
-  cat("done.\n")
-  return(eSet)
-  
-}
