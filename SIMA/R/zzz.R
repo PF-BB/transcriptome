@@ -69,6 +69,6 @@ writeExprs <- function(eset, path="./",type=NULL, bg.method=NULL,norm.method=NUL
                     sep="\t", quote=F, row.names=F)
   )
   
-  save(eSet, file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),"RData"))
+  save(eSet, file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".RData"))
 }
 
