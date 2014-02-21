@@ -13,9 +13,9 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   
   # 1. tests
   
-  if (missing(input)) stop("\n\tL'argument input est manquant !\n")
-  if (missing(phenoFile)) stop("\n\tL'argument phenoFile est manquant !\n")
-  if (missing(type)) stop("\n\tL'argument type est manquant !\n")
+  if (missing(input)) stop("\n\tL'argument input est manquant !")
+  if (missing(phenoFile)) stop("\n\tL'argument phenoFile est manquant !")
+  if (missing(type)) stop("\n\tL'argument type est manquant !")
   
   if (!( type %in% c("affy","lumi"))) 
     stop("Le type de puces ", type, " n'est pas reconnu.")
@@ -27,7 +27,7 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
     eset <- lumi_normalization(dataFile=input, phenoFile=phenoFile, bg.method=bg.method, norm.method=norm.method){
       
   } else {
-    stop("\n\t Probleme avec l'argument 'type'\n")
+    stop("\n\tProbleme avec l'argument 'type'")
   }
   
   return(eset)

@@ -12,27 +12,27 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   
   # 1. Test on arguments 
   if (missing (dataFile)){
-    stop("\n\tL'argument dataFile est manquant.\n",call.=FALSE)
+    stop("\n\t L'argument dataFile est manquant.",call.=FALSE)
   }
   
   if(!file.exists(dataFile)){
-    stop(paste0("\n\tLe fichier ",dataFile," n'existe pas.\n"),call.=FALSE)
+    stop("\n\t Le fichier ",dataFile," n'existe pas.",call.=FALSE)
   }
   
   if (missing (phenoFile)){
-    stop("\n\tL'argument phenoFile est manquant.\n",call.=FALSE)
+    stop("\n\t L'argument phenoFile est manquant.",call.=FALSE)
   }
   
   if(!file.exists(phenoFile)){
-    stop(paste0("\n\tLe fichier ",phenoFile," n'existe pas.\n"),call.=FALSE)
+    stop("\n\t Le fichier ",phenoFile," n'existe pas.",call.=FALSE)
   }
   
   if(all(bg.method != c('none', 'bgAdjust', 'forcePositive', 'bgAdjust.affy'))){
-    stop(paste0("\n\tLa méthode de correction du bruit de fond ",bg.method," n'est pas supportée !\n"),call.=FALSE)
+    stop("\n\t La méthode de correction du bruit de fond ",bg.method," n'est pas supportée !",call.=FALSE)
   }
   
   if(all(norm.method != c("quantile", "rsn", "ssn", "loess", "vsn", "rankinvariant","average"))){
-    stop(paste0("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !\n"),call.=FALSE)
+    stop("\n\t La méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
   }
   
   #2. Read phenotype data file
@@ -42,10 +42,10 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   data = tryCatch(
     lumiR.batch(fileList=dataFile,sampleInfoFile=pheno),
     warning=function(w){
-      stop(paste0("\n\tLes IDs du fichier ",phenoFile," ne correspondent pas à ceux de ",dataFile,".\nVérifier votre fichier de phenotype ! \n"),call.=FALSE)
+      stop("\n\t Les IDs du fichier ",phenoFile," ne correspondent pas à ceux de ",dataFile,".\nVérifier votre fichier de phenotype ! ",call.=FALSE)
     },
     error=function(e) {
-      stop(paste0("\n\tLe fichier ",dataFile," n'est pas un fichier BeadStudio.\n Vérifiez votre fichier !\n"),call.=FALSE)
+      stop("\n\t Le fichier ",dataFile," n'est pas un fichier BeadStudio.\n Vérifiez votre fichier !",call.=FALSE)
     }
   )  
   
