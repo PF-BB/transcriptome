@@ -4,10 +4,9 @@
 #' @param PV numeric. Seuil de p-value
 #' @param p.val compute of raw pvalue or on adjusted pvalue
 #' @param name title for the graphic
-#' @return \item{eset}{An object of classe Expression-set.}
-#' @references lumi.
-#' @title Normalization of Illumina
-#' @export lumi_normalization
+#' @references 
+#' @title Volcano plot
+#' @export VolcanoPlot
 
 VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature.id){
 	
