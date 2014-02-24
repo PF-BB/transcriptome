@@ -10,7 +10,7 @@
 #' @title Normalization of Affymetrix or Illumina datasets.
 #' @export normalization
 
-normalization <- function(input, phenoFile, type, bg.method="none", norm.method="quantile", write=TRUE,output="./"){
+normalization <- function(input, phenoFile, type, bg.method="none", norm.method="quantile", bplot=TRUE, bwrite=TRUE, output="./"){
   
   # 1. tests
   
@@ -23,14 +23,20 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   
   # 2. Call the proper normalization method
   if (type == "affy") {
-    eset <- affy_normalization(inputFolder=input,  phenoFile=phenoFile,  bg.method=bg.method, norm.method=norm.method)
+    eset <- affy_normalization(inputFolder=input,  phenoFile=phenoFile,  bg.method=bg.method, norm.method=norm.method, bplot=bplot)
   } else if (type == "lumi") {
-    eset <- lumi_normalization(dataFile=input, phenoFile=phenoFile, bg.method=bg.method, norm.method=norm.method)
+    eset <- lumi_normalization(dataFile=input, phenoFile=phenoFile, bg.method=bg.method, norm.method=norm.method, bplot=bplot)
   } else {
     stop("\n\tProbleme avec l'argument 'type'")
   }
   
-  writeExprs(eset,path=ouput,type=type,bg.method=bg.method,norm.method=norm.method)
+  if (bplot)  {
+    bmp(file.path(output,"QC/norm_plot.bmp")
+    plot(eset, what="boxplot", main="Apres normalisation")
+    dev.off()
+  }
+  
+  if (bwrite) writeExprs(eset, path=ouput, type=type, bg.method=bg.method, norm.method=norm.method)
   
   return(eset)
 }

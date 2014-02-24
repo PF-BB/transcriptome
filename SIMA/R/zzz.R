@@ -57,12 +57,12 @@ thresholdIntensity <- function(eSet, seuil=NULL){
 }
 
 #write eSet data avec feature data in a table (not in log2) + RData (log2)
-writeExprs <- function(eset, path="./",type=NULL, bg.method=NULL,norm.method=NULL){
+writeExprs <- function(eset, path="./", type=NULL, bg.method=NULL,norm.method=NULL){
   if(missing(eset))
     stop("L'argument eset est manquant ! ")
   
-  if (class(eset) != "eSet")
-    stop(eset, "n'est pas un objet de class eSet ! ")
+  if ( !( class(eset) %in% c("eSet", "ExpressionSet") ) )
+    stop("L'objet 'eset' n'est pas un objet de class eSet ! ")
   
   write.table(cbind(eset@featureData@data, round(2^(assayData$expr),2),
                     file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".txt"),
