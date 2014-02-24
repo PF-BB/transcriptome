@@ -1,19 +1,25 @@
-multiTest_LIMMA <-
-function(X,y){
-	g <- nrow(X)
-	design <- cbind(y,1-y)
-	colnames(design) <- c("un","deux")
-	cont <- makeContrasts(un-deux,levels=design)
-	fit  <- lmFit(X,design)
-	fit <- contrasts.fit(fit,cont)
-	ordinary.t <- fit$coef / fit$stdev.unscaled / fit$sigma
+#' Declare the contrasts of interests for the differential analysis.
+#' @param X An Expression Set.
+#' @param y A vector contaning the class whose each sample blongs to.
+#' @param contr A vector of character strongs describing the contrasts. 
+#' @return \item{top}{An object topTable obtained after using limma's fit function.}
+#' @references limma.
+#' @title Perform differential analysis.
+#' @export analyse_diff
+
+analyse_diff <- function(X, y, contr){
+	design <- model.matrix(~ 0 + y)
+	colnames(design) <- levels(y)
+	cont <- makeContrasts(contrasts=contr, levels=design)
+	fit  <- lmFit(X, design)
+	fit  <- contrasts.fit(fit, cont)
 	fit  <- eBayes(fit)
-	top  <- topTable(fit,number=g,adjust.method="BH",sort.by="P")
-	list("top"=top,"ordinary.t"=ordinary.t)
+	top  <- topTable(fit, adjust.method="BH", sort.by="P")
+	return( top )
 }
 
 #Fonction qui reduit un topTable selon seuil FC et pvalue et qui enleve les log2
-topTableReducer = function(top, FC = 2, PV=0.05, p.val = c("adj","raw")){
+topTableReducer <- function(top, FC = 2, PV=0.05, p.val = c("adj","raw")){
   FC = log2(FC)
   
   if (p.val == "adj")

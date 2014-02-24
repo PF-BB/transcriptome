@@ -4,10 +4,14 @@
 #' @export preambule
 
 
-preambule <- function(path="./"){
+preambule <- function(path_in="./",path_out="./"){
   
-  if(!file.exists(path))
-    stop("Le dossier ", path," n'existe pas ! ", call.=FALSE)
+  if(!file.exists(path_in))
+    stop("Le dossier ", path_in," n'existe pas ! ", call.=FALSE)
+  else if(!file.exists(path_out))
+    stop("Le dossier ", path_out," n'existe pas ! ", call.=FALSE)
+  else if(!file.exists(file.path(path_in,"phenotype.txt")))
+    stop("Le fichiers de donnee phenotypiques ", file.path(path_in,"phenotype.txt")," n'existe pas ! ", call.=FALSE)
   else{
     cat("Création de l'arborescence ... \n\n")
     if(!file.exists(paste(path,"QC",sep="/")))
