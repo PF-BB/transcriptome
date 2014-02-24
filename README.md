@@ -14,3 +14,18 @@ Contient :
   - ``04_`` :arrow_right: annotation.
   - ``05_`` :arrow_right: écriture des tables.
 
+### Pour tester SIMA sans re-générer le Package
+
+```S
+rm(list=ls())
+setwd("~/git/transcriptome")
+
+require(devtools)
+require(roxygen2)
+
+# load SIMA (dev) 
+load_all("SIMA")
+
+# generate documentation
+document("SIMA")
+```
