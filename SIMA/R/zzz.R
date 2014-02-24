@@ -72,3 +72,6 @@ writeExprs <- function(eset, path="./",type=NULL, bg.method=NULL,norm.method=NUL
   save(eSet, file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".RData"))
 }
 
+exp_mat_mult <- function(k, mat, vec)
+  eval(parse(text=paste(rep("mat",k),collapse=" %*% "))) %*% u
+
