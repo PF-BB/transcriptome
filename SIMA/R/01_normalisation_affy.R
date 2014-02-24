@@ -21,7 +21,7 @@ affy_normalization <- function(inputFolder, phenoFile, bg.method="none", norm.me
     stop("\n\tL'argument phenoFile est manquant.\n",call.=FALSE)
   
   if (! file.exists(inputFolder)) 
-    stop( "\n\Le dossier ",inputFolder," n'existe pas !\n" )  
+    stop( "\n\tLe dossier ",inputFolder," n'existe pas !\n" )  
   if (! file.exists(phenoFile)) 
     stop( "\n\tLe fichier ",phenoFile," n'existe pas !\n" )  
   
