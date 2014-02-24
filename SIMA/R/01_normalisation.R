@@ -4,12 +4,13 @@
 #' @param type A character string: must be either "affy" or "illumina".
 #' @param bg.method A character string: the method used to deals with microarray background noise. If the specified method is not supported, an error is generated
 #' @param norm.method A character string: the method used perform an inter-array normalization. If the specified method is not supported, an error is generated
+#' @param write A boolean to indicate if the data should be written
 #' @return \item{eset}{An object of classe Expression-set.}
 #' @references FARMS and lumi.
 #' @title Normalization of Affymetrix or Illumina datasets.
 #' @export normalization
 
-normalization <- function(input, phenoFile, type, bg.method="none", norm.method="quantile"){
+normalization <- function(input, phenoFile, type, bg.method="none", norm.method="quantile", write=TRUE,output="./"){
   
   # 1. tests
   
@@ -28,6 +29,8 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   } else {
     stop("\n\tProbleme avec l'argument 'type'")
   }
+  
+  writeExprs(eset,path=ouput,type=type,bg.method=bg.method,norm.method=norm.method)
   
   return(eset)
 }

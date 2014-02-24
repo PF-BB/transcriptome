@@ -30,6 +30,7 @@ batch2eSet <- function(batch){
   return(eSet)
 }
 
+# seuillage des intensités
 thresholdIntensity <- function(eSet, seuil=NULL){
   
   if(is.null(seuil))
@@ -54,3 +55,20 @@ thresholdIntensity <- function(eSet, seuil=NULL){
   return(eSetnew)
   
 }
+
+#write eSet data avec feature data in a table (not in log2) + RData (log2)
+writeExprs <- function(eset, path="./",type=NULL, bg.method=NULL,norm.method=NULL){
+  if(missing(eset))
+    stop("L'argument eset est manquant ! ")
+  
+  if (class(eset) != "eSet")
+    stop(eset, "n'est pas un objet de class eSet ! ")
+  
+  write.table(cbind(eset@featureData@data, round(2^(assayData$expr),2),
+                    file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".txt"),
+                    sep="\t", quote=F, row.names=F)
+  )
+  
+  save(eSet, file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".RData"))
+}
+
