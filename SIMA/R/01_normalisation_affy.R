@@ -13,6 +13,7 @@ affy_normalization <- function(inputFolder, phenoFile, bg.method="none", norm.me
   # 0. Load packages (move somewhere else?)
   require(farms)
   require(affy)
+  require(annotate)
   
   # 1. Test on arguments 
   if (missing (inputFolder)) 
@@ -40,6 +41,10 @@ affy_normalization <- function(inputFolder, phenoFile, bg.method="none", norm.me
   # 4. Apply normalization with wrapper function "farms::expFarms"
   eset <- expFarms(affybatch, bgcorrect.method = bg.method, pmcorrect.method = "pmonly", 
                    normalize.method = norm.method, weight=0.5) ; gc()
+  annot_lib <- paste0(annotation(eset),".db")
+  library(annot_lib, character.only = TRUE)
+  
+  eset@featureData = new("AnnotatedDataFrame", data.frame(ID = getSYMBOL(rownames(eset), annotation(eset)) ) )
   
   return(eset)
 }

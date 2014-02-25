@@ -8,12 +8,13 @@
 #' @title Volcano plot
 #' @export VolcanoPlot
 
-VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature.id){
+VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature.id){  # , plotInFile=TRUE
 	
 	titre = NULL
 	pval  = NULL
-	ylab = "";
-	
+	ylab = ""
+	p.val <- match.arg(p.val)
+  
 	if (p.val == "adj"){
 		if (is.element("adj.P.Val", colnames(topT))) {
 			pval  = -log10(topT$adj.P.Val)
