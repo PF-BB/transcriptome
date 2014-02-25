@@ -31,7 +31,7 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   }
   
   if (bplot)  {
-    bmp(file.path(output,"QC/norm_plot.bmp")
+    bmp(file.path(output,"QC/norm_plot.bmp"))
     plot(eset, what="boxplot", main="Apres normalisation")
     dev.off()
   }
