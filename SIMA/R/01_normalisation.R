@@ -23,9 +23,9 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   
   # 2. Call the proper normalization method
   if (type == "affy") {
-    eset <- affy_normalization(inputFolder=input,  phenoFile=phenoFile,  bg.method=bg.method, norm.method=norm.method, bplot=bplot)
+    eset <- affy_normalization(inputFolder=input,  phenoFile=phenoFile,  bg.method=bg.method, norm.method=norm.method)
   } else if (type == "lumi") {
-    eset <- lumi_normalization(dataFile=input, phenoFile=phenoFile, bg.method=bg.method, norm.method=norm.method, bplot=bplot)
+    eset <- lumi_normalization(dataFile=input, phenoFile=phenoFile, bg.method=bg.method, norm.method=norm.method)
   } else {
     stop("\n\tProbleme avec l'argument 'type'")
   }
