@@ -38,7 +38,7 @@ topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","r
   foo <- function(A) sign(A) * 2^( abs(A) )
   if (nrow(top) > 0){
     if (tlog2 == FALSE) {
-      N1 <- ncol(fit$genes)
+      N1 <- ifelse( is.null(ncol(fit$genes)) ,0,ncol(fit$genes))
       N2 <- ifelse(is.null(coef), ncol(fit), 1)
       top[, N1+(1:N2)] <- foo(top[, N1+(1:N2)])
       names(top)[names(top)=="logFC"] <- "FC"
