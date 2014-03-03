@@ -12,7 +12,7 @@
 
 normalization <- function(input, phenoFile, type, bg.method="none", norm.method="quantile", bplot=TRUE, bwrite=TRUE, output="./"){
   
-  # 1. tests
+  # 1. Tests
   
   if (missing(input)) stop("\n\tL'argument input est manquant !")
   if (missing(phenoFile)) stop("\n\tL'argument phenoFile est manquant !")
@@ -21,15 +21,26 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   if (!( type %in% c("affy","lumi"))) 
     stop("Le type de puces ", type, " n'est pas reconnu.")
   
-  # 2. Call the proper normalization method
+  # 2. Read phenotype
+  
+  if (missing (phenoFile))
+    stop("\n\tL'argument phenoFile est manquant.",call.=FALSE)
+  
+  if(!file.exists(phenoFile))
+    stop("\n\tLe fichier ",phenoFile," n'existe pas.",call.=FALSE)
+  
+  pheno <- read.AnnotatedDataFrame(phenoFile)
+  
+  # 3. Call the proper normalization method
   if (type == "affy") {
-    eset <- affy_normalization(inputFolder=input,  phenoFile=phenoFile,  bg.method=bg.method, norm.method=norm.method)
+    eset <- affy_normalization(inputFolder=input,  pheno=pheno,  bg.method=bg.method, norm.method=norm.method)
   } else if (type == "lumi") {
-    eset <- lumi_normalization(dataFile=input, phenoFile=phenoFile, bg.method=bg.method, norm.method=norm.method)
+    eset <- lumi_normalization(dataFile=input, pheno=pheno, bg.method=bg.method, norm.method=norm.method)
   } else {
     stop("\n\tProbleme avec l'argument 'type'")
   }
   
+  # 4. Write outputs if required
   if (bplot)  {
     bmp(file.path(output,"QC/norm_plot.bmp"))
     plot(eset, what="boxplot", main="Apres normalisation")

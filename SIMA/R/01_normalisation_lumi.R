@@ -1,11 +1,14 @@
 #' Normalization of Illumina datasets.
 #' @param dataFile A character string for BeadStudio file.
+#' @param pheno An oject of class AnnotatedDataFrame.
+#' @param bg.method A character string: the method used to deals with microarray background noise. If the specified method is not supported, an error is generated
+#' @param norm.method A character string: the method used perform an inter-array normalization. If the specified method is not supported, an error is generated
 #' @return \item{eset}{An object of classe Expression-set.}
 #' @references lumi.
 #' @title Normalization of Illumina
 #' @export lumi_normalization
 
-lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.method="quantile"){
+lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="quantile"){
   
   # 0. Load packages (move somewhere else?)
   require(lumi)
@@ -17,22 +20,14 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   if(!file.exists(dataFile))
     stop(paste0("\n\tLe fichier ",dataFile," n'existe pas."),call.=FALSE)
   
-  if (missing (phenoFile))
-    stop("\n\tL'argument phenoFile est manquant.",call.=FALSE)
-    
-  if(!file.exists(phenoFile))
-    stop("\n\tLe fichier ",phenoFile," n'existe pas.",call.=FALSE)
   
   if(all(bg.method != c('none', 'bgAdjust', 'forcePositive', 'bgAdjust.affy')))
     stop("\n\tLa méthode de correction du bruit de fond ",bg.method," n'est pas supportée !",call.=FALSE)
   
   if(all(norm.method != c("quantile", "rsn", "ssn", "loess", "vsn", "rankinvariant","none")))
     stop("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
-    
-  #2. Read phenotype data file
-  pheno = read.table(phenoFile, sep="\t", header=T)
-  
-  # 3. Create lumiBatch
+      
+  # 2. Create lumiBatch
   data = tryCatch(
     lumiR.batch(fileList=dataFile,sampleInfoFile=pheno),
     warning=function(w){
@@ -44,8 +39,8 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
   )  
   cat("\n")
   
-  # 4. Normalisation
-  ## Si déjà faite dans BeadStudio
+  # 3. Normalization
+  ## If already performed with BeadStudio
   if(bg.method=="none" & norm.method=="none"){
     cat("Perform thresholding ...\n")
     cat("Perform log2 transformation ...\ndone.\n")
@@ -58,7 +53,7 @@ lumi_normalization <- function(dataFile, phenoFile, bg.method="none", norm.metho
                   annotation = data@annotation
     )
   }else{
-    ## 4. Apply normalization with wrapper function "lumi::lumiExpresso"
+    ## Else: apply normalization with wrapper function "lumi::lumiExpresso"
     data.norm = lumiExpresso(data,bgcorrect.param=list(method=bg.method),normalize.param=list(method=norm.method),varianceStabilize.param=list(method="log2"))
     eSet = batch2eSet(data.norm)
   }
