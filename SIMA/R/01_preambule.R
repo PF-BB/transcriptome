@@ -1,6 +1,5 @@
 #' Create hierarchy
 #' @param path where to create the folders
-#' @references 
 #' @export preambule
 
 

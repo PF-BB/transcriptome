@@ -4,7 +4,6 @@
 #' @param PV numeric. Seuil de p-value
 #' @param p.val compute of raw pvalue or on adjusted pvalue
 #' @param name title for the graphic
-#' @references 
 #' @title Volcano plot
 #' @export VolcanoPlot
 

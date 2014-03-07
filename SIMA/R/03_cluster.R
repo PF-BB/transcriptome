@@ -1,23 +1,18 @@
-#' Heatmap with annotations.
+#' Cluster with annotations.
 #' @param X numeric matrix of the values to be plotted
 #' @param pheno a vector or matrix to annotate the samples
-#' @param dist.method function used to compute the distance (dissimilarity) between both rows and columns
-#' @param hclust.method function used to compute the hierarchical clustering
 #' @param title character string for the title of the cluster
 #' @param sample.name vector for names of the sample
-#' @param rect.hclust integer for numbers of groups : draw k rectangles
+#' @param dist.method function used to compute the distance (dissimilarity) between both rows and columns
+#' @param hclust.method function used to compute the hierarchical clustering
+#' @param rect.hclust.k integer for numbers of groups : draw k rectangles
 #' @return \item{hclust object}{An object of class hclust.}
-#' @references 
 #' @title Draw a Cluster with Annotations
 #' @export clusterWithParameter
-
-
-library(RColorBrewer)
-
-
-### ------------------------------------------------------------------------ ###
-clusterWithParameter = function(X, pheno, title="",sample.name=colnames(X),dist.method=c("pearson","euclidean","manhattan","spearman"), hclust.method = "ward", rect.hclust.k=0 ){
+clusterWithParameter <- function(X, pheno, title = " ", sample.name = colnames(X), dist.method=c("pearson","euclidean","manhattan","spearman"), hclust.method = "ward", rect.hclust.k = 0 ){
 	
+  library(RColorBrewer)
+  
 	bleu   = c("blue","cyan","cornflowerblue","midnightblue","blueviolet","aliceblue","magenta","darkolivegreen1")
 	rouge  = c("red","lightpink1","orange2","yellow1","deeppink1","orange4","pink","wheat")
 	vert   = c("darkgreen","green","darkolivegreen1","darkslategrey","seagreen","turquoise2","yellow2","wheat")

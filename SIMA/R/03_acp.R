@@ -1,5 +1,13 @@
-acp <-
-function(fichier,logValues,classes,couleurs) {
+#' Principal Component Analysis.
+#' @param fichier .
+#' @param eset .
+#' @title PCA.
+#' @export acp
+
+acp <-function(fichier,eset) {
+  logValues <- exprs(eset)
+  classes <- pData(eset)
+  couleurs <- as.numeric(as.factor(classes))
   PRC       <- prcomp(t(logValues),scale=TRUE)
   PC_prc    <- PRC$x
   noms      <- colnames(logValues)

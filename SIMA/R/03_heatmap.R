@@ -4,23 +4,18 @@
 #' @param hclust.method function used to compute the hierarchical clustering
 #' @param cols colors of the heatmap
 #' @param annot a vector or matrix to annotate the samples
-#' @param labRow,labCol character vectors with row/column labels to use 
+#' @param labRow character vectors with row/column labels to use 
+#' @param labCol character vectors with row/column labels to use 
+#' @param title character string for the title of the cluster
 #' @param scale character indicating if the values should be centered and scaled ("row" or "none")
-#' @param Rowv,Colv booleen. TRUE plots samples/genes dendrogram. FALSE otherwise
-#' @param hcr,hcc object of class hclust if dendrogram already calculated
+#' @param Rowv booleen. TRUE plots samples/genes dendrogram. FALSE otherwise
+#' @param Colv booleen. TRUE plots samples/genes dendrogram. FALSE otherwise
+#' @param hcr object of class hclust if dendrogram already calculated
+#' @param hcc object of class hclust if dendrogram already calculated
 #' @param saturate.cols boolen.
 #' @return \item{list}{An list with 2 objects of class hclust.}
-#' @references 
 #' @title Draw a Heat Map with Annotations
 #' @export sima.heatmap
-
-### Librairies
-library(RColorBrewer)
-
-#####################################################
-#				FONCTION PRINCIPALE					#			
-#####################################################
-
 sima.heatmap = function(	X, 
 		dist.method=c("pearson","euclidean","manhattan","L1"), 
 		hclust.method=c("ward","complete"),
@@ -35,7 +30,7 @@ sima.heatmap = function(	X,
 		hcr=NULL,
 		hcc=NULL,
 		saturate.cols=F){
-	
+  library(RColorBrewer)
 	nbSample = ncol(X)
 	
 	# --- Calcul de la matrice de distance

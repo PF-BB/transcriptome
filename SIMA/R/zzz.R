@@ -1,7 +1,6 @@
 #' Internal utils functions.
 #' @title Internal utils functions
-
-
+#' @keywords internal
 eSet2lumiBatch <- function(eSet) {
   lumiBatch = new('LumiBatch', 
                   exprs = eSet@assayData$exprs, 
@@ -11,6 +10,8 @@ eSet2lumiBatch <- function(eSet) {
   )
   return(lumiBatch)
 }
+
+#' @keywords internal
 eSet2affyBatch <- function(eSet){
   affyBatch = new('AffyBatch', 
                   exprs = eSet@assayData$exprs, 
@@ -20,6 +21,7 @@ eSet2affyBatch <- function(eSet){
   )
 }
 
+#' @keywords internal
 batch2eSet <- function(batch){
   eSet = new("ExpressionSet", 
              exprs = batch@assayData$exprs, 
