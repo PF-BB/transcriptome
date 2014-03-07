@@ -1,0 +1,18 @@
+\name{declare_contrastes}
+\alias{declare_contrastes}
+\title{Declare contrasts.}
+\usage{
+declare_contrastes(y)
+}
+\arguments{
+  \item{y}{A vector containing the class of each sample.}
+}
+\value{
+\item{contr}{The vector containing the character strings
+describing the desired constrasts.}
+}
+\description{
+Declare the contrasts of interests for the differential
+analysis.
+}
+
