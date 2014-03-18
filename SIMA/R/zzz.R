@@ -59,19 +59,24 @@ thresholdIntensity <- function(eSet, seuil=NULL){
 }
 
 #write eSet data avec feature data in a table (not in log2) + RData (log2)
-writeExprs <- function(eset, path="./", type=NULL, bg.method=NULL,norm.method=NULL){
+writeExprs <- function(eset, output="Data", type=NULL, bg.method=NULL,norm.method=NULL){
   if(missing(eset))
     stop("L'argument eset est manquant ! ")
   
   if ( !( class(eset) %in% c("eSet", "ExpressionSet") ) )
     stop("L'objet 'eset' n'est pas un objet de class eSet ! ")
   
-  write.table(cbind(eset@featureData@data, round(2^(assayData$expr),2),
-                    file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".txt"),
-                    sep="\t", quote=F, row.names=F)
-  )
+  if( ! file.exists(output))
+    output="./"
   
-  save(eSet, file = paste0(path,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".RData"))
+  cat("Writing normalized data (not in log2) ...")
+  write.table(cbind(as.matrix(eset@featureData@data),round(2^(exprs(eset)),2)),
+                    file = paste0(output,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".txt"),
+                    sep="\t", quote=F, row.names=F)
+  cat(" done.\n")
+  cat("Writing eset data (in log2) in an object RData ...")
+  save(eset, file = paste0(output,"/datanorm_",type,"_",bg.method,"_",norm.method,Sys.Date(),".RData"))
+  cat(" done.\n")
 }
 
 exp_mat_mult <- function(k, mat, vec)

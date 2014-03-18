@@ -28,15 +28,7 @@ lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="q
     stop("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
       
   # 2. Create lumiBatch
-  data = tryCatch(
-    lumiR.batch(fileList=dataFile,sampleInfoFile=pheno),
-    warning=function(w){
-      stop("\n\tLes IDs du fichier ",phenoFile," ne correspondent pas à ceux de ",dataFile,".\nVérifier votre fichier de phenotype !",call.=FALSE)
-    },
-    error=function(e) {
-      stop("\n\tLe fichier ",dataFile," n'est pas un fichier BeadStudio.\n Vérifiez votre fichier !",call.=FALSE)
-    }
-  )  
+  data=lumiR.batch(fileList=dataFile,sampleInfoFile=pheno)
   cat("\n")
   
   # 3. Normalization

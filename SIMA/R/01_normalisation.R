@@ -35,19 +35,23 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   if (type == "affy") {
     eset <- affy_normalization(inputFolder=input,  pheno=pheno,  bg.method=bg.method, norm.method=norm.method)
   } else if (type == "lumi") {
-    eset <- lumi_normalization(dataFile=input, pheno=pheno, bg.method=bg.method, norm.method=norm.method)
+    eset <- lumi_normalization(dataFile=input, pheno=phenoFile, bg.method=bg.method, norm.method=norm.method)
   } else {
     stop("\n\tProbleme avec l'argument 'type'")
   }
   
   # 4. Write outputs if required
   if (bplot)  {
+    if(!file.exists("QC/")){
+      dir.create("QC")
+      cat("Création du répertoire QC/\n")
+    }
     bmp(file.path(output,"QC/norm_plot.bmp"))
     plot(eset, what="boxplot", main="Apres normalisation")
     dev.off()
   }
-  
-  if (bwrite) writeExprs(eset, path=ouput, type=type, bg.method=bg.method, norm.method=norm.method)
+
+  if (bwrite) writeExprs(eset, output=paste0(output,"/Data"), type=type, bg.method=bg.method, norm.method=norm.method)
   
   return(eset)
 }

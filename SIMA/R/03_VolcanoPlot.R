@@ -7,7 +7,7 @@
 #' @title Volcano plot
 #' @export VolcanoPlot
 
-VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature.id){  # , plotInFile=TRUE
+VolcanoPlot <- function(fit, FC, PV, p.val = c("adj","raw"), name = ""){  # , plotInFile=TRUE
 	
 	titre = NULL
 	pval  = NULL
@@ -15,6 +15,7 @@ VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature
 	p.val <- match.arg(p.val)
   
 	if (p.val == "adj"){
+	  topT = topTable(fit,number=Inf)
 		if (is.element("adj.P.Val", colnames(topT))) {
 			pval  = -log10(topT$adj.P.Val)
 			if (name == ""){
@@ -32,6 +33,7 @@ VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature
 		}
 	}
 	else if (p.val == "raw"){
+	  topT = topTable(fit,adjust.method="none",number=Inf)
 		if (is.element("P.Value", colnames(topT))) {
 			pval = -log10(topT$P.Value)
 			if (name == ""){
@@ -75,13 +77,8 @@ VolcanoPlot <- function(topT, FC, PV, p.val = c("adj","raw"), name = "", feature
 	par(mar = c(5,5,5,5))
 	xlab = "log2(FC)"
 	plot  (topT$logFC[reste] , pval[reste] , col="grey" , pch=16, cex=0.7,main=titre, xlab=xlab,ylab=ylab,xlim=xaxis, ylim=yaxis)
-	points(topT$logFC[gauche], pval[gauche], col="chartreuse4", pch=16, cex=0.7)
-	points(topT$logFC[droite], pval[droite], col="red", pch=16, cex=0.7)
-	
-	if (! missing(feature.id)){
-		idxFeat = unlist(lapply(feature.id, function(r){which(r == topT$ID)}))
-		points(topT$logFC[idxFeat], pval[idxFeat], col="blue", pch=1, cex=1.2)
-	}
+	points(topT$logFC[gauche], pval[gauche], col="chartreuse4", pch=16, cex=1)
+	points(topT$logFC[droite], pval[droite], col="red", pch=16, cex=1)
 	
 	abline(v=c(-log2(FC), 0, log2(FC)), col=c("blue","black","blue"), lty=2)
 	abline(h= -log10(PV), col="blue", lty=2)

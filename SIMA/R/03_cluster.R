@@ -1,5 +1,5 @@
 #' Cluster with annotations.
-#' @param X numeric matrix of the values to be plotted
+#' @param X numeric matrix of the values to be plotted or object of class eSet
 #' @param pheno a vector or matrix to annotate the samples
 #' @param title character string for the title of the cluster
 #' @param sample.name vector for names of the sample
@@ -47,7 +47,16 @@ clusterWithParameter <- function(X, pheno, title = " ", sample.name = colnames(X
 	#check arguments
 	if(is.factor(pheno))
 		pheno= as.vector(pheno)
-	
+  else if(class(X)=="ExpressionSet" ){
+    if(all(is.element(pheno, colnames(pData(eset)))))
+      pheno = pData(eset)[pheno]
+    else
+      stop("one or several phenotype values are not correct")
+  }
+
+  if(class(X)=="ExpressionSet")
+    X = exprs(X)
+          
 	if (length(sample.name) != ncol(X)){
 		if (is.null(colnames(X))){
 			warning("spurious length of sample.name : setting sample.name to empty labels")

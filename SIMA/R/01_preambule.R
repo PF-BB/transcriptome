@@ -13,17 +13,17 @@ preambule <- function(path_in="./",path_out="./"){
     stop("Le fichiers de donnee phenotypiques ", file.path(path_in,"phenotype.txt")," n'existe pas ! ", call.=FALSE)
   else{
     cat("Création de l'arborescence ... \n\n")
-    if(!file.exists(paste(path,"QC",sep="/")))
-      dir.create(paste(path,"QC",sep="/"))
+    if(!file.exists(paste(path_out,"QC",sep="/")))
+      dir.create(paste(path_out,"QC",sep="/"))
     
-    if(!file.exists(paste(path,"AnalyseDifferentielle",sep="/")))
-      dir.create(paste(path,"AnalyseDifferentielle",sep="/"))
+    if(!file.exists(paste(path_out,"AnalyseDifferentielle",sep="/")))
+      dir.create(paste(path_out,"AnalyseDifferentielle",sep="/"))
 
-    if(!file.exists(paste(path,"Data",sep="/")))
-      dir.create(paste(path,"Data",sep="/"))
+    if(!file.exists(paste(path_out,"Data",sep="/")))
+      dir.create(paste(path_out,"Data",sep="/"))
     
-    if(!file.exists(paste(path,"Graphes",sep="/")))
-      dir.create(paste(path,"Graphes",sep="/"))
+    if(!file.exists(paste(path_out,"Graphes",sep="/")))
+      dir.create(paste(path_out,"Graphes",sep="/"))
     
   }
   
