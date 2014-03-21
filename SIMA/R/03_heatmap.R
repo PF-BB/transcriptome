@@ -1,5 +1,5 @@
 #' Heatmap with annotations.
-#' @param X numeric matrix of the values to be plotted
+#'@param X numeric matrix of the values to be plotted or object of class eSet
 #' @param dist.method function used to compute the distance (dissimilarity) between both rows and columns
 #' @param hclust.method function used to compute the hierarchical clustering
 #' @param cols colors of the heatmap
@@ -33,6 +33,9 @@ sima.heatmap = function(	X,
   library(RColorBrewer)
 	nbSample = ncol(X)
 	
+  if(class(X)=="ExpressionSet")
+    X = exprs(X)
+  
 	# --- Calcul de la matrice de distance
 	if(dist.method=="pearson"){
 		dd = distPearson

@@ -27,7 +27,7 @@ analyse_diff <- function(X, y, contr){
 #' @title Top table reducer.
 #' @export topTableReducer
 
-topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","raw"), tlog2=FALSE){
+topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","raw"), tlog2=FALSE, eset,bWrite=T){
   p.val <- match.arg(p.val)
   sort.by.pval <- ifelse(ncol(fit) > 1 & is.null(coef), "F", "P")
   top  <- topTable(fit, coef=coef, adjust.method="BH", sort.by=sort.by.pval, number=nrow(fit), 
@@ -44,6 +44,20 @@ topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","r
       names(top)[names(top)=="logFC"] <- "FC"
     }
     top$AveExpr <- 2^(top$AveExpr)
+    
+    if(bWrite){
+      idxPdata = grep(colnames(fit$design)[1],pData(eset))
+      class1 = which(pData(eset)[idxPdata]==rownames(fit$contrasts)[which(fit$contrasts==1)])
+      class2 = which(pData(eset)[idxPdata]==rownames(fit$contrasts)[which(fit$contrasts==-1)])
+      if(file.exists("AnalyseDifferentielle/"))
+        output="AnalyseDifferentielle/"
+      else
+        output="./"
+      write.table(cbind(top,2^(exprs(eset[top[,1],c(class1,class2)]))),
+                  paste0(output,"/topTable_",colnames(fit$contrasts),"_PV",p.val,PV,"_FC",FC,".xls"),
+                  sep="\t", row.names=F,quote=F)
+    }
+    
     return(top)
   }
   else
