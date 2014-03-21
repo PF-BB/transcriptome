@@ -28,7 +28,7 @@ lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="q
     stop("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
       
   # 2. Create lumiBatch
-  data=lumiR.batch(fileList=dataFile,sampleInfoFile=pheno)
+  data=lumiR.batch(fileList=dataFile,sampleInfoFile=pheno,annotationColumn=c("PROBE_ID","SYMBOL","ACCESSION"))
   cat("\n")
   
   # 3. Normalization

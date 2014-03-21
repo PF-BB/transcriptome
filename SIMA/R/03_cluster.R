@@ -1,6 +1,6 @@
 #' Cluster with annotations.
 #' @param X numeric matrix of the values to be plotted or object of class eSet
-#' @param pheno a vector or matrix to annotate the samples
+#' @param pheno a vector or matrix to annotate the samples or a vector containing names of phenotypes in eset
 #' @param title character string for the title of the cluster
 #' @param sample.name vector for names of the sample
 #' @param dist.method function used to compute the distance (dissimilarity) between both rows and columns
