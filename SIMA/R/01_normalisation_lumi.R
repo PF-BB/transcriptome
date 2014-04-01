@@ -1,4 +1,4 @@
-#' Normalization of Illumina datasets.
+#' Normalisation of Illumina datasets.
 #' @param dataFile A character string for BeadStudio file.
 #' @param pheno An oject of class AnnotatedDataFrame.
 #' @param bg.method A character string: the method used to deals with microarray background noise. If the specified method is not supported, an error is generated
@@ -22,10 +22,10 @@ lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="q
   
   
   if(all(bg.method != c('none', 'bgAdjust', 'forcePositive', 'bgAdjust.affy')))
-    stop("\n\tLa méthode de correction du bruit de fond ",bg.method," n'est pas supportée !",call.=FALSE)
+    stop("\n\tLa methode de correction du bruit de fond ",bg.method," n'est pas supportee !",call.=FALSE)
   
   if(all(norm.method != c("quantile", "rsn", "ssn", "loess", "vsn", "rankinvariant","none")))
-    stop("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
+    stop("\n\tLa methode de normalisation ",norm.method," n'est pas supportee !",call.=FALSE)
       
   # 2. Create lumiBatch
   data=lumiR.batch(fileList=dataFile,sampleInfoFile=pheno,annotationColumn=c("PROBE_ID","SYMBOL","ACCESSION"))

@@ -26,8 +26,15 @@ normalization(input, phenoFile, type, bg.method = "none",
   perform an inter-array normalization. If the specified
   method is not supported, an error is generated}
 
-  \item{write}{A boolean to indicate if the data should be
+  \item{bwrite}{A boolean to indicate if the data should be
   written}
+
+  \item{bplot}{A boolean to indicate if plots whould be
+  saved. In the affirmative, the plots are saved as BMP
+  images in the QC sub-folder.}
+
+  \item{output}{A character string, the path of the working
+  directory.}
 }
 \value{
 \item{eset}{An object of classe Expression-set.}
