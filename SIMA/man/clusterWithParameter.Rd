@@ -7,9 +7,11 @@ clusterWithParameter(X, pheno, title = " ", sample.name = colnames(X),
   hclust.method = "ward", rect.hclust.k = 0)
 }
 \arguments{
-  \item{X}{numeric matrix of the values to be plotted}
+  \item{X}{numeric matrix of the values to be plotted or
+  object of class eSet}
 
-  \item{pheno}{a vector or matrix to annotate the samples}
+  \item{pheno}{a vector or matrix to annotate the samples
+  or a vector containing names of phenotypes in eset}
 
   \item{title}{character string for the title of the
   cluster}

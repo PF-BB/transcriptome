@@ -8,7 +8,7 @@ declare_contrastes <- function(y){
   
   # 1. Check y
   if (missing(y)) stop("\n\tL'argument y est manquant !")
-  if (!is.factor(y)) warning("y n'est pas un facteur, il sera transformé automatiquement en facteur.")
+  if (!is.factor(y)) warning("y n'est pas un facteur, il sera transforme automatiquement en facteur.")
 
   yfac <- as.factor(y)
   lev <- levels(yfac)
@@ -43,7 +43,7 @@ declare_contrastes_2 <- function(y){
   
   # 1. Check y
   if (missing(y)) stop("\n\tL'argument y est manquant !")
-  if (!is.factor(y)) warning("y n'est pas un facteur, il sera transformé automatiquement en facteur.")
+  if (!is.factor(y)) warning("y n'est pas un facteur, il sera transforme automatiquement en facteur.")
   
   yfac <- as.factor(y)
   lev <- levels(yfac)

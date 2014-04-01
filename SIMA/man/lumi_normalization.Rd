@@ -22,7 +22,7 @@ lumi_normalization(dataFile, pheno, bg.method = "none",
 \item{eset}{An object of classe Expression-set.}
 }
 \description{
-Normalization of Illumina datasets.
+Normalisation of Illumina datasets.
 }
 \references{
 lumi.

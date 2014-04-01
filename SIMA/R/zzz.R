@@ -32,18 +32,19 @@ batch2eSet <- function(batch){
   return(eSet)
 }
 
-# seuillage des intensités
+# seuillage des intensites
+#' @keywords internal
 thresholdIntensity <- function(eSet, seuil=NULL){
   
   if(is.null(seuil))
-    stop("L'argulent threshold est manquant avec aucune valeur par défaut",call.=FALSE)
+    stop("L'argulent threshold est manquant avec aucune valeur par defaut",call.=FALSE)
   
   if ( !is.numeric(seuil))
-    stop("L'argument threshold doit être une valeur numérique",call.=FALSE)
+    stop("L'argument threshold doit etre une valeur numerique",call.=FALSE)
   
   data = exprs(eSet)
   if(max(data) < 20 & seuil >= 10)
-    warning("Les valeurs d'intensités sont en log2. Vérifiez votre seuil ! ")
+    warning("Les valeurs d'intensites sont en log2. Verifiez votre seuil ! ")
   
   data[data < seuil] = seuil
   
@@ -58,7 +59,11 @@ thresholdIntensity <- function(eSet, seuil=NULL){
   
 }
 
-#write eSet data avec feature data in a table (not in log2) + RData (log2)
+#' @keywords internal
+exp_mat_mult <- function(k, mat, vec)
+  eval(parse(text=paste(rep("mat",k),collapse=" %*% "))) %*% u
+
+#write eSet data with feature data in a table (not in log2) + RData (log2)
 writeExprs <- function(eset, output="Data", type=NULL, bg.method=NULL,norm.method=NULL){
   if(missing(eset))
     stop("L'argument eset est manquant ! ")
@@ -79,6 +84,5 @@ writeExprs <- function(eset, output="Data", type=NULL, bg.method=NULL,norm.metho
   cat(" done.\n")
 }
 
-exp_mat_mult <- function(k, mat, vec)
-  eval(parse(text=paste(rep("mat",k),collapse=" %*% "))) %*% u
+
 

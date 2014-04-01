@@ -212,7 +212,7 @@ clusterWithParameter <- function(X, pheno, title = " ", sample.name = colnames(X
 	return(hc)
 }
 
-#retourne le numéro de colonne de la matrice cluster.colors
+#retourne le numero de colonne de la matrice cluster.colors
 cluster.getLegendColor = function(x){
 	
 	f = as.factor(x)
@@ -244,7 +244,7 @@ cluster.getLegendLabel = function(x){
 	res   
 }
 
-#retourne le num�ro de colonne de la matrice cluster.colors
+#retourne le numero de colonne de la matrice cluster.colors
 cluster.getColor = function(x){
 	res = x
 	f = as.factor(res)

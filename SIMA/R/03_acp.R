@@ -4,7 +4,7 @@
 #' @title PCA.
 #' @export acp
 
-acp <-function(fichier,eset) {
+acp <-function(fichier, eset) {
   logValues <- exprs(eset)
   classes <- pData(eset)
   couleurs <- as.numeric(as.factor(classes))
