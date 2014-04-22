@@ -28,7 +28,7 @@ analyse_diff <- function(X, y, contr){
 #' @references limma.
 #' @title Top table reducer.
 #' @export topTableReducer
-topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","raw"), tlog2=FALSE, eset, bWrite=TRUE){
+topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","raw"), tlog2=FALSE, eset, bWrite=FALSE){
   p.val <- match.arg(p.val)
   sort.by.pval <- ifelse(ncol(fit) > 1 & is.null(coef), "F", "P")
   top  <- topTable(fit, coef=coef, adjust.method="BH", sort.by=sort.by.pval, number=nrow(fit), 
