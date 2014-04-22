@@ -8,17 +8,18 @@ acp <-function(fichier, eset, bWrite=FALSE) {
   require(ggplot2)
   require(reshape2)
   logValues <- exprs(eset)
-  classes <- unlist(pData(eset))
-  couleurs <- as.numeric(as.factor(classes))
+  Classes <- unlist(pData(eset))
+  couleurs <- as.numeric(as.factor(Classes))
   PRC       <- prcomp(t(logValues),scale=TRUE)
   PC_prc    <- PRC$x
   noms      <- colnames(logValues)
   
   pca <- prcomp(t(logValues), scale=T)
   scores <- data.frame(Classes, pca$x[,1:3])
-  pc1.2 <- qplot(x=PC1, y=PC2, data=scores, colour=classes, size=2) + scale_size(guide = 'none') + 
-    labs(x="1st principal component", y="2nd principal component")
-  pc1.2
+  pc1.2 <- qplot(x=PC1, y=PC2, data=scores, colour=Classes, size=2) + scale_size(guide = 'none') + 
+    labs(x="1st principal component", y="2nd principal component") + 
+    geom_text(aes(label=colnames(eset)),vjust=-1) +
+    xlim(range(scores$PC1)*1.2) # used for unusually long sample names --> pass as parameter?
   
   if (bWrite) {
     pdf(fichier)
@@ -42,4 +43,5 @@ acp <-function(fichier, eset, bWrite=FALSE) {
 #   plot(update(prctextplot,aspect = "xy",xlab="PC1",ylab="PC2",main = "2D-PCA"))
 #   plot(pourcent)
 #   dev.off()
+  pc1.2
 }
