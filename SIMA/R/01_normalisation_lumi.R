@@ -28,7 +28,7 @@ lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="q
     stop("\n\tLa méthode de normalisation ",norm.method," n'est pas supportée !",call.=FALSE)
       
   # 2. Create lumiBatch
-  data=lumiR.batch(fileList=dataFile,sampleInfoFile=pheno,annotationColumn=c("PROBE_ID","SYMBOL","ACCESSION"))
+  data=lumiR.batch(fileList=dataFile,sampleInfoFile=pheno,annotationColumn=c("PROBE_ID","SYMBOL","ACCESSION"),lib.mapping="lumiHumanIDMapping")
   cat("\n")
   
   # 3. Normalization
@@ -48,6 +48,10 @@ lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="q
     ## Else: apply normalization with wrapper function "lumi::lumiExpresso"
     data.norm = lumiExpresso(data,bgcorrect.param=list(method=bg.method),normalize.param=list(method=norm.method),varianceStabilize.param=list(method="log2"))
     eSet = batch2eSet(data.norm)
+  }
+  
+  if(length(grep("SYMBOL",colnames(eSet@featureData@data),ignore.case=TRUE))==0){
+    eSet@featureData@data=cbind(eSet@featureData@data,nuID2RefSeqID(rownames(eSet), lib.mapping='lumiHumanIDMapping',returnAllInfo=TRUE))
   }
   
   return(eSet)
