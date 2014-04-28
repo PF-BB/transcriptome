@@ -3,20 +3,34 @@
 \title{Top table reducer.}
 \usage{
 topTableReducer(fit, coef = NULL, FC = 2, PV = 0.05, p.val = c("adj",
-  "raw"), tlog2 = FALSE)
+  "raw"), tlog2 = FALSE, eset, bWrite = TRUE)
 }
 \arguments{
-  \item{fit}{.}
+  \item{fit,}{an ‘MArrayLM’ fitted linear model object.}
 
-  \item{FC}{.}
+  \item{coef,}{an Integer value corresponding to the
+  desired contrast. Default to NULL.}
 
-  \item{PV}{.}
+  \item{FC,}{numeric, Fold Change threshold. Default to 2.}
 
-  \item{p.val}{.}
-}
-\value{
-\item{top}{An object topTable with a twist obtained after
-using limma's fit function.}
+  \item{PV,}{numeric, p-value threshold. Default to 0.05.}
+
+  \item{p.val,}{character string, compute raw p-value
+  ("raw") or adjusted p-value (adj"). Default to "adj". The
+  p-values are adjusted with the procedure defined by
+  Benjamini and Hochberg.}
+
+  \item{tlog2,}{boolean, telling whether a log2
+  transformation has to be applied to the normalisation
+  data or not. Default to FALSE.}
+
+  \item{eset,}{an expression set containing the normalised
+  data.}
+
+  \item{bWrite,}{boolean, telling whether a table
+  containing the results of the normalisation plus the
+  differential analysis has to be written in the result
+  folder. Default to TRUE.}
 }
 \description{
 Modify the original topTable function to allow non-log fold

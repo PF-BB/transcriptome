@@ -6,7 +6,6 @@
 #' @references limma.
 #' @title Perform differential analysis.
 #' @export analyse_diff
-
 analyse_diff <- function(X, y, contr){
 	design <- model.matrix(~ 0 + y)
 	colnames(design) <- levels(y)
@@ -18,16 +17,18 @@ analyse_diff <- function(X, y, contr){
 }
 
 #' Modify the original topTable function to allow non-log fold changes and average expressions.
-#' @param fit .
-#' @param FC .
-#' @param PV . 
-#' @param p.val . 
-#' @return \item{top}{An object topTable with a twist obtained after using limma's fit function.}
+#' @param fit, an ‘MArrayLM’ fitted linear model object.
+#' @param coef, an Integer value corresponding to the desired contrast. Default to NULL.
+#' @param FC, numeric, Fold Change threshold. Default to 2.
+#' @param PV, numeric, p-value threshold. Default to 0.05.
+#' @param p.val, character string, compute raw p-value ("raw") or adjusted p-value (adj"). Default to "adj". The p-values are adjusted with the procedure defined by Benjamini and Hochberg.
+#' @param tlog2, boolean, telling whether a log2 transformation has to be applied to the normalisation data or not. Default to FALSE.
+#' @param eset, an expression set containing the normalised data.
+#' @param bWrite, boolean, telling whether a table containing the results of the normalisation plus the differential analysis has to be written in the result folder. Default to TRUE.
 #' @references limma.
 #' @title Top table reducer.
 #' @export topTableReducer
-
-topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","raw"), tlog2=FALSE, eset,bWrite=T){
+topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","raw"), tlog2=FALSE, eset, bWrite=FALSE){
   p.val <- match.arg(p.val)
   sort.by.pval <- ifelse(ncol(fit) > 1 & is.null(coef), "F", "P")
   top  <- topTable(fit, coef=coef, adjust.method="BH", sort.by=sort.by.pval, number=nrow(fit), 
@@ -61,5 +62,5 @@ topTableReducer <- function(fit, coef=NULL,  FC = 2, PV=0.05, p.val = c("adj","r
     return(top)
   }
   else
-    stop("Aucun gene differentiellement exprime selon ces critères ! ")
+    stop("Aucun gene differentiellement exprime selon ces criteres ! ")
 }

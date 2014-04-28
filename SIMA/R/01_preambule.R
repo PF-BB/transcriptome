@@ -1,5 +1,6 @@
-#' Create hierarchy
-#' @param path where to create the folders
+#' Create an output arborescence in which the output files will be saved. 
+#' @param path_in the path of the folder containing the input data.
+#' @param path_out the path of the folder where the ouput files should be written.
 #' @export preambule
 
 
@@ -12,7 +13,7 @@ preambule <- function(path_in="./",path_out="./"){
   else if(!file.exists(file.path(path_in,"phenotype.txt")))
     stop("Le fichiers de donnee phenotypiques ", file.path(path_in,"phenotype.txt")," n'existe pas ! ", call.=FALSE)
   else{
-    cat("Création de l'arborescence ... \n\n")
+    cat("Creation de l'arborescence ... \n\n")
     if(!file.exists(paste(path_out,"QC",sep="/")))
       dir.create(paste(path_out,"QC",sep="/"))
     

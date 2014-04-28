@@ -4,7 +4,9 @@
 #' @param type A character string: must be either "affy" or "illumina".
 #' @param bg.method A character string: the method used to deals with microarray background noise. If the specified method is not supported, an error is generated
 #' @param norm.method A character string: the method used perform an inter-array normalization. If the specified method is not supported, an error is generated
-#' @param write A boolean to indicate if the data should be written
+#' @param bwrite A boolean to indicate if the data should be written
+#' @param bplot A boolean to indicate if plots whould be saved. In the affirmative, the plots are saved as BMP images in the QC sub-folder.
+#' @param output A character string, the path of the working directory.
 #' @return \item{eset}{An object of classe Expression-set.}
 #' @references FARMS and lumi.
 #' @title Normalization of Affymetrix or Illumina datasets.
@@ -44,7 +46,7 @@ normalization <- function(input, phenoFile, type, bg.method="none", norm.method=
   if (bplot)  {
     if(!file.exists("QC/")){
       dir.create("QC")
-      cat("Création du répertoire QC/\n")
+      cat("Creation du repertoire QC/\n")
     }
     bmp(file.path(output,"QC/norm_plot.bmp"))
     plot(eset, what="boxplot", main="Apres normalisation")

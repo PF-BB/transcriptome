@@ -1,13 +1,14 @@
-#' Volcano plot.
-#' @param topT object topTable
-#' @param FC numeric. Seuil de Fold change
-#' @param PV numeric. Seuil de p-value
-#' @param p.val compute of raw pvalue or on adjusted pvalue
-#' @param name title for the graphic
+#' Volcano plot performed after a differential analysis. It represents the p-value obtained after a two sample (limma) test as a function of the Fold Change.
+#' @param fit an an ‘MArrayLM’ fitted linear model object.
+#' @param coef, an Integer value corresponding to the desired contrast. Default to NULL.
+#' @param FC, numeric, Fold Change threshold.
+#' @param PV, numeric, p-value threshold.
+#' @param p.val, character string, compute raw p-value ("raw") or adjusted p-value (adj"). Default to "adj". The p-values are adjusted with the procedure defined by Benjamini and Hochberg.
+#' @param name, character string, title for the graphic. Default is an empty title ("").
 #' @title Volcano plot
 #' @export VolcanoPlot
 
-VolcanoPlot <- function(fit, FC, PV, p.val = c("adj","raw"), name = ""){  # , plotInFile=TRUE
+VolcanoPlot <- function(fit, coef=NULL, FC=2, PV=0.05, p.val = c("adj","raw"), name = ""){  # , plotInFile=TRUE
 	
 	titre = NULL
 	pval  = NULL
@@ -15,7 +16,7 @@ VolcanoPlot <- function(fit, FC, PV, p.val = c("adj","raw"), name = ""){  # , pl
 	p.val <- match.arg(p.val)
   
 	if (p.val == "adj"){
-	  topT = topTable(fit,number=Inf)
+	  topT = topTable(fit, coef=coef, number=Inf)
 		if (is.element("adj.P.Val", colnames(topT))) {
 			pval  = -log10(topT$adj.P.Val)
 			if (name == ""){
@@ -33,7 +34,7 @@ VolcanoPlot <- function(fit, FC, PV, p.val = c("adj","raw"), name = ""){  # , pl
 		}
 	}
 	else if (p.val == "raw"){
-	  topT = topTable(fit,adjust.method="none",number=Inf)
+	  topT = topTable(fit, coef=coef, adjust.method="none",number=Inf)
 		if (is.element("P.Value", colnames(topT))) {
 			pval = -log10(topT$P.Value)
 			if (name == ""){

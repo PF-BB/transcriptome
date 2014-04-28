@@ -9,7 +9,8 @@ sima.heatmap(X, dist.method = c("pearson", "euclidean", "manhattan", "L1"),
   hcr = NULL, hcc = NULL, saturate.cols = F)
 }
 \arguments{
-  \item{X}{numeric matrix of the values to be plotted}
+  \item{X}{numeric matrix of the values to be plotted or
+  object of class eSet}
 
   \item{dist.method}{function used to compute the distance
   (dissimilarity) between both rows and columns}
