@@ -1,6 +1,7 @@
 #' Principal Component Analysis.
 #' @param fichier .
 #' @param eset .
+#' @param bWrite Boolean, whether to save figure in a file. Default to FALSE.
 #' @title PCA.S
 #' @export acp
 
@@ -18,8 +19,8 @@ acp <-function(fichier, eset, bWrite=FALSE) {
   scores <- data.frame(Classes, pca$x[,1:3])
   pc1.2 <- qplot(x=PC1, y=PC2, data=scores, colour=Classes, size=2) + scale_size(guide = 'none') + 
     labs(x="1st principal component", y="2nd principal component") + 
-    geom_text(aes(label=colnames(eset)),vjust=-1) +
-    xlim(range(scores$PC1)*1.2) # used for unusually long sample names --> pass as parameter?
+    geom_text(aes(label=colnames(eset)),vjust=-1,show_guide  = F) +
+    xlim(range(scores$PC1)*1.8) # used for unusually long sample names --> pass as parameter?
   
   if (bWrite) {
     pdf(fichier)

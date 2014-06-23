@@ -46,7 +46,7 @@ lumi_normalization <- function(dataFile, pheno, bg.method="none", norm.method="q
     )
   }else{
     ## Else: apply normalization with wrapper function "lumi::lumiExpresso"
-    data.norm = lumiExpresso(data,bgcorrect.param=list(method=bg.method),normalize.param=list(method=norm.method),varianceStabilize.param=list(method="log2"))
+    data.norm = lumiExpresso(data,bgcorrect.param=list(method=bg.method),normalize.param=list(method=norm.method),varianceStabilize.param=list(method="log2"), QC.evaluation = FALSE)
     eSet = batch2eSet(data.norm)
   }
   
