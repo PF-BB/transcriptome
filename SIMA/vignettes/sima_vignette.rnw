@@ -1,0 +1,359 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+
+\title{SIMA : outils d'aide à l'analyse de données microarray}
+\author{Alexandra Richard, Vincent Guillemot, Justine Guégan}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+
+\maketitle
+
+L'analyse décrite ici consiste à analyser les gènes differentiellement exprimés chez 11 patients, avant (T1) et après traitement (T2), soit 22 échantillons appariés
+
+Ces patients sont répondeurs francs, répondeurs partiels ou non répondeurs au traitement. 
+
+On effectue ensuite une deuxième analyse, ciblée uniquement sur certains gènes (inflammation et immunité),
+
+puis on effectue une troisième analyse en comparant avant traitement (T1) les patients répondeurs et non répondeur, en excluant les patients répondeurs partiels. 
+
+Pour que l'analyse differentielle des échantillons appariés soit correctement réalisée par le package limma, le fichier de données brutes doit contenir uniquement les données correspondant à ces échantillons appariés (T1 et T2 pour chaque patient), sans autres échantillons "isolés". 
+
+\section{Nettoyer la mémoire}
+
+Toujours nettoyer la mémoire avant de commencer
+
+<<NettoyerMemoire,eval=F>>=
+rm(list = ls())
+gc()
+
+@
+
+\section{Charger packages nécesaires à l'analyse et Installer SIMA}
+
+pour rappel, la commande pour installer les packages Bioconductor est
+<<bioconductor, eval=FALSE>>=
+source("http://www.bioconductor.org/biocLite.R")
+biocLite("limma")
+@
+<<pas_bioconductor, eval=FALSE>>=
+install.packages("R.utils")
+@
+
+SIMA est un package à part, contacter la plateforme pour son installation. 
+
+Une fois que les packages sont installés, ne pas oublier de les charger
+
+<<installerSIMAetchargerpackages,eval=F>>=
+require(R.utils)
+library(limma)
+library(lumi)
+library(affy)
+sourceDirectory("C:/Documents and Settings/JCC/Bureau/transcriptome/SIMA/R/", modifiedOnly=FALSE)
+@
+
+\section{Définir le dossier de travail}
+
+Il faut ensuite définir le dossier dans lequel on veut travailler (working directory).
+<<definirwd,eval=F>>=
+setwd("C:/Documents and Settings/JCC/Bureau/transcriptome/Results_20140428_V2_ECH_APPARIES/")
+@
+
+<<data_path, echo=FALSE,eval=F>>=
+DATA_PATH <- "C:/Documents and Settings/JCC/Bureau/transcriptome/Results_20140428_V2_ECH_APPARIES/"
+@
+
+\section{Création de l'arborescence d'analyse }
+Quatre sous-dossiers sont crées automatiquement dans le dossier de travail :
+\begin{itemize}
+  \item Data
+  \item AnalyseDifferentielle
+  \item Graphes
+  \item QC
+\end{itemize}
+
+
+<<preambuleArborescence,eval=F>>=
+preambule(path_in=DATA_PATH,path_out=DATA_PATH)
+@
+
+
+\section{Importer les fichiers de données}
+
+Pour analyser les données, on a besoin du fichier de données brutes (ou déjà normalisée si on souhaite faire la normalisation auparavant avec un autre logiciel). 
+Dans ce cas, j'ai normalisé les données avec BeadStudio et utilisé le fichier obtenu après cette normalisation ("average.txt"). 
+
+Pour charger le fichier de données : 
+<<ChargerData,eval=F>>=
+dataFile = "C:/Documents and Settings/JCC/Bureau/transcriptome/Results_20140428_V2_ECH_APPARIES/average.txt"
+@
+
+Il faut ensuite charger le fichier de description des données, qui contient le nom des échantillons, leurs caracteristiques... toutes les informations utiles pour l'analyse.
+Ce fichier doit etre au format .txt
+Ici, il s'appelle "phenotype.txt"
+
+(doit il toujours s'appeler comme ca ????)
+
+<<ChargerFichierDescriptionDonnees,eval=F>>=
+phenoFile = "C:/Documents and Settings/JCC/Bureau/transcriptome/Results_20140428_V2_ECH_APPARIES/phenotype.txt"
+@
+
+
+\section{Création de eset}
+L'étape suissvante est la création de l'objet eset
+C'est à cette étape que l'on peut effectuer la normalisation, en choisisant la méthode que l'on souhaite utiliser. 
+
+(ici peut etre mettre un déscriptif très bref des différentes méthodes ????)
+
+bplot sert à ...
+
+bwrite sert à écrire les données dans le fichier "data". Le nom du fichier est attribué automatiquement ????
+
+description de eset
+
+<<CreationEset,eval=F>>=
+require(limma)
+require(lumi)
+eset = normalization(input=dataFile,phenoFile=phenoFile,type="lumi",bg.method="none",norm.method="none",bplot=TRUE,bwrite=TRUE) 
+@
+
+
+\section{Controle qualité avant analyse différentielle}
+
+On peut créer différents graphes pour visualiser les données avant l'analyse differentielle.
+
+\subsection{density plot: }
+
+
+La fonction bmp sert à enregister l'image automatiquement au format .bmp, dans le dossier dans lequel on travaille. On peut précise que l'on souhaite enregistrer l'image dans un sous dossier "QC"
+
+Il est possible de modifier la taille de l'image en renseignant les champs "width" et "height" de la fonction bmp ()
+
+"densityplot.bmp"" correspond au  nom du fichier. 
+la fonction plot sert à créer le graphique de notre choix (par exemple "density" =  density plot)
+dev.off() sert à fermer l'objet ?
+<<densityPlot,eval=F>>=
+bmp("QC/densityplot.bmp")
+plot(eset, what="density")
+dev.off()
+
+@
+
+\subsection{Pour clusteriser les echantillons :}
+
+On peut choisir les caracteristiques des echantillons à afficher sur le cluster (temps, réponse au traitement...) en choisissant dans "pheno" les colonnes du fichier phenotype.txt à afficher (pheno = eset@phenoData@data[,c(5,6)] : 5 et 6 correspondent au numero des colonnes que l'on veut afficher)
+
+<<cluster,eval=F>>=
+bmp("QC/cluster.bmp",width=1000,height=800,pointsize=17)
+clusterWithParameter(X=exprs(eset),pheno=eset@phenoData@data[,c(5,6)],dist.method="pearson",sample.name=eset@phenoData@data[,3])
+dev.off()
+@
+
+\section{Analyse différentielle}
+
+On choisit selon quelle caracteristique on veut comparer les échantillons (colonne de phenotype.txt , ici "Temps")
+T1 et T2 sont les deux temps auquel on veut comparer les échantillons.
+ 
+je ne sais pas à quoi correspond "model.matrix(~0+ct)"
+
+<<contraste_design,eval=F>>=
+ct <- factor(pData(eset)$Temps )
+design <- model.matrix(~0+ct)
+colnames(design) <- c("T1","T2")
+@
+
+En cas de réplicats techniques, on les intègre en utilisant ces lignes de code :
+
+<<duplicats, cache=TRUE,eval=F>>=
+dupcor <- duplicateCorrelation(exprs(eset),design,block= pData(eset)$Ninclusion)
+dupcor$consensus.correlation
+@
+
+Analyse différentielle :
+<<ana_diff,eval=F>>=
+fit <- lmFit(exprs(eset),design,block=pData(eset)$Ninclusion,correlation=dupcor$consensus.correlation)
+contrasts <- makeContrasts(T1 - T2, levels=design)
+fit2 <- contrasts.fit(fit, contrasts)
+fit2 <- eBayes(fit2)
+summary(decideTests(fit2, method="global"))
+
+@
+
+\subsection{Enregister les résultats de l'analyse differentielle et les filtrer}
+
+Il faut enregistrer le fichier contenant le résultat de l'analyse différentielle.
+On a ici nommé le fichier contenant tous les résultats "TopALL". (FC = 0 et PV = 1 : on n'applique donc pas de filtre) 
+
+La commande cbind permet d'attacher le symbole officiel des gènes au fichier.
+<<topAll,eval=F>>=
+topALL = topTableReducer(fit2,FC=0,PV=1,p.val="adj",eset=eset,bWrite=F)
+topALL=cbind(Symbol=fData(eset)[rownames(topALL),"SYMBOL"],topALL)
+@
+
+
+On l'enregistre à la fois sous format .txt (fonction write.table) pour pouvoir le lire dans excel et sous format ".Rdata" pour pouvoir le charger directement dans R sans avoir besoin de le re-créer.
+
+sep="\t" indique qu'une tabulation est utilisée comme séparateur dans le fichier
+
+row.names =F indique que la première colonne du fichier ne correspond pas au nom des lignes ????
+
+<<EnregTopALL,eval=F>>=
+write.table(topALL,file="AnalyseDifferentielle/top_ALL.txt",sep="\t",quote=F,row.names=F)
+save(topALL,file="AnalyseDifferentielle/topALL.Rdata" )
+@
+
+
+\subsection{Filtres}
+
+Il est possible de créer directement dans R des fichiers contenant des données filtrées.
+
+Ici, nous avons choisi de ne conserver que les gènes dont le fold change (FC) est $> 1,2$ et le p brut $< 0,001$. On peut modifier les critères du filtre à volonté, notamment en selectionnant la p value brute ("raw") ou ajustée ("adj") (correspondant au FDR).
+
+On a choisi d'appeler ce fichier top1.
+On enregistre ce fichier aux memes formats que précedemment.
+
+<<top1,eval=F>>=
+top1 = topTableReducer(fit2,FC=1.2,PV=0.001,p.val="raw",eset=eset,bWrite=F)
+top1=cbind(Symbol=fData(eset)[rownames(top1),"SYMBOL"],top1)
+write.table(top1,file="AnalyseDifferentielle/top_FC1.2_PV0.001raw.txt",sep="\t",quote=F,row.names=F)
+save(top1,file="AnalyseDifferentielle/top1_FC1.2_PV0.001raw.Rdata" )
+@
+
+Ici, un fichier crée avec un filtre plus stringent : 
+$FC > 1,2$ et FDR (= p value ajustée "adj") $< 0,05$
+
+<<top2,eval=F>>=
+top2 = topTableReducer(fit2,FC=1.2,PV=0.05,p.val="adj",eset=eset,bWrite=F)
+top2=cbind(Symbol=fData(eset)[rownames(top2),"SYMBOL"],top2)
+write.table(top2,file="AnalyseDifferentielle/top_FC1.2_PV0.05adj.txt",sep="\t",quote=F,row.names=F)
+save(top2,file="AnalyseDifferentielle/top2_FC1.2_PV0.001raw.Rdata" )
+@
+
+
+\section{Volcanoplot}
+
+On peut créer un volcanoplot pour représenter les gènes signicativement dérégulés selon les critères de notre choix (Ici $FC > 1.2$ et Pval ajustée $< 0.05$ ).
+Les gènes significativement dérégulés apparaiteront en couleur sur le graphique.
+
+Les images sont enregistrées dans le dous-dossier "AnalyseDifferentielle""
+On peut choisir la taille de l'image (width=700,height=700,pointsize=18)
+
+<<Volcanoplot1,eval=F>>=
+bmp("AnalyseDifferentielle/T2vsT1_FC1.2_Pval0.05adj.bmp",width=700,height=700,pointsize=18)
+VolcanoPlot(fit2,name="T2 vs T1",FC=1.2,PV=0.05,p.val="adj")
+dev.off()
+@
+
+idem avec p value brute < 0,001
+<<Volcanoplot2,eval=F>>=
+bmp("AnalyseDifferentielle/T2vsT1_FC1.2_Pval0.001raw.bmp",width=700,height=700,pointsize=18)
+VolcanoPlot(fit2,name="T2 vs T1",FC=1.2,PV=0.001,p.val="raw")
+dev.off()
+@
+
+
+\subsection{Heatmap}
+On peut ensuite créer une carte d'expression des gènes differentiellement exprimés (par exemple à partir du fichier top1 crée ci dessus).
+
+\subsection{sauvegarder genes diff dans object X}
+
+On sauvegarde d'abord le ficher (d'abord dans un objet "X", puis on l'enregistre) sous une forme qui permet de l'importer dans le logiciel GenE (qui permet de créer et de modifier des heatmaps)
+
+<<Heatmap,eval=F>>=
+X=exprs(eset)[rownames(top1),]
+symbols=as.vector(top1$Symbol)
+write.table(cbind(rownames(X),symbols,X),file="AnalyseDifferentielle/top1_datanorm.txt",sep="\t", row.names=F, quote=F)
+
+@
+
+On crée ensuite la heatmap
+<<CreerHeatmap,eval=F>>=
+sima.heatmap(X,dist.method="pearson",hclust.method="ward",cols="RedGreen",labCol=eset@phenoData@data[,3],labRow=symbols,annot=eset@phenoData@data[,c(5,6)])
+@
+
+
+
+\subsection{ACP}
+
+On peut créer des ACP en choisissant les differentes caractéristiques des échantillons à mettre en évidence visuellement:
+
+Classes=pData(eset)\$Temps : les couleurs des échantillons sont attribuées en fonction 
+du critère "temps", par exemple,les T1 apparaissent en rouge, les T2 en bleu
+
+Classes=pData(eset)\$Ninclusion : une couleur sera attribuée pour chaque numéro d'inclusion.
+
+<<ACP,eval=F>>=
+acp("none",eset,bWrite=FALSE,Classes=pData(eset)$Temps)
+acp("none",eset,bWrite=FALSE,Classes=pData(eset)$Ninclusion)
+@
+
+
+\section{Créer des nouveaux eset pour des analyses plus ciblées}
+
+\subsection{analyse ciblée sur certains gènes}
+
+Ici, on souhaite refaire une analyse ciblée uniquement sur les gènes de l'inflammation et de l'immunité.
+
+On crée un fichier .txt contenantles symboles des gènes que l'on souhaite séléctionner (ici GenesInflammationEtImmunite.txt)
+(La liste des gènes est obtenue dans la base de données ConceptGen)
+
+On crée ensuite un nouvel eset (appelé esetInflam) qui ne contient que les données des probes correspondant aux gènes qui nous interessent
+<<InflamEtImm,eval=F>>=
+inflam = read.table("../GenesInflammationEtImmunite.txt",sep="\t", header=T)
+inflamIntersect = intersect(fData(eset)$SYMBOL,inflam[,1])
+tmp = fData(eset);tmp = as.matrix(tmp);rownames(tmp) = tmp[,4]
+esetInflam = eset[tmp[inflamIntersect,1],]
+@
+
+On procède ensuite à l'analyse differentielle en utilisant les mèmes lignes de code que précédemment, il suffit de remplacer "eset" par "esetInflam"
+
+On enregistre ensuite les fichiers obtenus, comme précédemment, en appliquant ou non des filtres. (il suffit de remplacer "eset" par "esetInflam")
+
+\subsection{Analyse ciblée en fonction des caracteristiques des échantillons}
+
+On veut faire une nouvelle analyse en comparant, avant traitement (en T1) les patients répondeurs francs aux patients non répondeurs.
+On crée donc un nouvel eset (eset\_T1\_rep) ne contenant que les données des T1, en excluant les patients répondeurs partiels. On supprime les duplicats techniques ((!duplicated(ninclusion))
+On procède ensuite à l'analyse differentielle
+
+<<AnalyseT1,eval=F>>=
+ct <- factor(pData(eset)$Temps )
+repondeur = factor(pData(eset)$Repondeur)
+ninclusion = factor(pData(eset)$Ninclusion)
+
+eset_T1_rep = eset[,(ct == "T1")&(repondeur!="RepPartiel")& (!duplicated(ninclusion)) ] 
+
+facteurRep = factor(pData(eset_T1_rep)$Repondeur)
+design <- model.matrix(~0+facteurRep)
+colnames(design) <- c("NonRepondeur","Repondeur")
+
+
+fit <- lmFit(exprs(eset_T1_rep),design)
+contrasts <- makeContrasts(NonRepondeur - Repondeur, levels=design)
+fit2 <- contrasts.fit(fit, contrasts)
+fit2 <- eBayes(fit2)
+summary(decideTests(fit2, method="global"))
+@
+
+
+On enregistre ensuite les fichiers obtenus, comme précédemment
+
+\section{Charger des fichiers déjà crées}
+
+Une fois qu'on a crée (et enregistré au format Rdata: ne pas oublier de le faire)  un jeu de données dans R, il est possible de le loader directement:
+
+Pour loader eset
+<<loaderEset,eval=F>>=
+load("Data/datanorm_lumi_none_none2014-04-28.RData")
+@
+
+Pour loader les fichiers obtenus après analyse différentielle
+<<loaderTop,eval=F,eval=F>>=
+load("AnalyseDifferentielle/top1_FC1.2_PV0.001raw.Rdata")
+load("AnalyseDifferentielle/top2_FC1.2_PV0.001raw.Rdata")
+@
+
+
+
+\end{document}
