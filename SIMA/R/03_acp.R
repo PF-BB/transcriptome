@@ -1,18 +1,20 @@
 #' Principal Component Analysis.
 #' @param fichier .
 #' @param eset .
+#' @pheno a vector which indicates the name of columns of phenotypes you want to plot
 #' @param bWrite Boolean, whether to save figure in a file. Default to FALSE.
 #' @title PCA.S
 #' @export acp
 
-acp <-function(fichier, eset, bWrite=FALSE) {
+acp <-function(fichier, eset, pheno=NULL, bWrite=FALSE) {
   require(ggplot2)
   require(reshape2)
   logValues <- exprs(eset)
-  Classes <- unlist(pData(eset))
+  if(!is.null(pheno))
+    Classes <- unlist(pData(eset)[,pheno])
+  else
+    Classes <- unlist(pData(eset))
   couleurs <- as.numeric(as.factor(Classes))
-  PRC       <- prcomp(t(logValues),scale=TRUE)
-  PC_prc    <- PRC$x
   noms      <- colnames(logValues)
   
   pca <- prcomp(t(logValues), scale=T)
