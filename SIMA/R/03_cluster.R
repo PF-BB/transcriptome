@@ -48,8 +48,8 @@ clusterWithParameter <- function(X, pheno, title = " ", sample.name = colnames(X
 	if(is.factor(pheno))
 		pheno= as.vector(pheno)
   else if(class(X)=="ExpressionSet" ){
-    if(all(is.element(pheno, colnames(pData(eset)))))
-      pheno = pData(eset)[pheno]
+    if(all(is.element(pheno, colnames(pData(X)))))
+      pheno = pData(X)[pheno]
     else
       stop("one or several phenotype values are not correct")
   }
